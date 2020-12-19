@@ -1,0 +1,210 @@
+[
+    {
+        "id": "6f9b9d63.179014",
+        "type": "tab",
+        "label": "ExampleCode",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "bd6a25f7.ece868",
+        "type": "mqtt in",
+        "z": "6f9b9d63.179014",
+        "name": "",
+        "topic": "yourMainTopic/Plant05",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "7c12f7df.6505e8",
+        "x": 300,
+        "y": 160,
+        "wires": [
+            [
+                "7c8bb388.07950c",
+                "c77b4a9a.fa5958",
+                "498a415b.f57bb"
+            ]
+        ]
+    },
+    {
+        "id": "7c8bb388.07950c",
+        "type": "debug",
+        "z": "6f9b9d63.179014",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "x": 970,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "dc345e3b.cf1ce",
+        "type": "debug",
+        "z": "6f9b9d63.179014",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "x": 970,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "562fbbed.c9dcb4",
+        "type": "influxdb out",
+        "z": "6f9b9d63.179014",
+        "influxdb": "500547ff.1da7c8",
+        "name": "",
+        "measurement": "Pflanzen",
+        "precision": "s",
+        "retentionPolicy": "",
+        "x": 1040,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "c77b4a9a.fa5958",
+        "type": "json",
+        "z": "6f9b9d63.179014",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 520,
+        "y": 220,
+        "wires": [
+            [
+                "745007ca.952c38"
+            ]
+        ]
+    },
+    {
+        "id": "745007ca.952c38",
+        "type": "function",
+        "z": "6f9b9d63.179014",
+        "name": "",
+        "func": "var value=msg.payload[\"Temp\"];\nif (value > 128) {\n    value = value-256;\n}\nmsg.payload[\"Temp\"]=value;\nmsg.payload[\"Pflanze\"]=\"Planze 05\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 690,
+        "y": 240,
+        "wires": [
+            [
+                "562fbbed.c9dcb4",
+                "dc345e3b.cf1ce"
+            ]
+        ]
+    },
+    {
+        "id": "9045b647.4cff78",
+        "type": "inject",
+        "z": "6f9b9d63.179014",
+        "name": "Watchdog Refresh 18h",
+        "topic": "",
+        "payload": "Watchdog Refresh",
+        "payloadType": "str",
+        "repeat": "",
+        "crontab": "00 18 * * *",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 210,
+        "y": 100,
+        "wires": [
+            [
+                "498a415b.f57bb"
+            ]
+        ]
+    },
+    {
+        "id": "498a415b.f57bb",
+        "type": "trigger",
+        "z": "6f9b9d63.179014",
+        "op1": "Plant Sensor 05 Alive",
+        "op2": "Plant Sensor 05 Timeout !!!",
+        "op1type": "str",
+        "op2type": "str",
+        "duration": "8",
+        "extend": true,
+        "units": "hr",
+        "reset": "",
+        "bytopic": "all",
+        "name": "Watchdog 01",
+        "x": 530,
+        "y": 280,
+        "wires": [
+            [
+                "23649b8.f16e664",
+                "504f3838.95dac8"
+            ]
+        ]
+    },
+    {
+        "id": "23649b8.f16e664",
+        "type": "debug",
+        "z": "6f9b9d63.179014",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "x": 970,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "504f3838.95dac8",
+        "type": "e-mail",
+        "z": "6f9b9d63.179014",
+        "server": "mail.gmx.net",
+        "port": "465",
+        "secure": true,
+        "tls": false,
+        "name": "yourEmail@gmx.ch",
+        "dname": "EMail Out via GMX",
+        "x": 990,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "7c12f7df.6505e8",
+        "type": "mqtt-broker",
+        "z": "",
+        "name": "localhost",
+        "broker": "mosquitto",
+        "port": "1883",
+        "clientid": "",
+        "usetls": false,
+        "compatmode": false,
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": ""
+    },
+    {
+        "id": "500547ff.1da7c8",
+        "type": "influxdb",
+        "z": "",
+        "hostname": "influxdb",
+        "port": "8086",
+        "protocol": "http",
+        "database": "yourDataBase",
+        "name": "",
+        "usetls": false,
+        "tls": ""
+    }
+]
